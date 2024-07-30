@@ -8,3 +8,4 @@
 /nginx/etc/ssl/certs/cert.crt
 /nginx/etc/ssl/private/cert.key
 /nginx/etc/.htpasswd
+/iac/.terraform.tfstate.lock.info
