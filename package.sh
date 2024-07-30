@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# Prepares the environment to execute the commands of this script.
-function prepareToExecute() {
-  source functions.sh
-
-  showBanner
-
-  cd iac || exit 1
-}
-
 # Checks the dependencies of this script.
 function checkDependencies() {
   if [ -z "$DOCKER_CMD" ]; then
@@ -16,6 +7,15 @@ function checkDependencies() {
 
     exit 1
   fi
+}
+
+# Prepares the environment to execute the commands of this script.
+function prepareToExecute() {
+  source functions.sh
+
+  showBanner
+
+  cd iac || exit 1
 }
 
 # Builds the container images.

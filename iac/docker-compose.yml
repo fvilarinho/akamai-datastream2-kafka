@@ -1,3 +1,4 @@
+# Manifest to describe the customized fluentd service.
 services:
   fluentd:
     platform: linux/amd64

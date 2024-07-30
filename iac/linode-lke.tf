@@ -1,3 +1,4 @@
+# Creates a LKE cluster that will run the stack.
 resource "linode_lke_cluster" "default" {
   k8s_version = var.settings.version
   label       = var.settings.label
@@ -13,6 +14,7 @@ resource "linode_lke_cluster" "default" {
   }
 }
 
+# Downloads the LKE configuration file used to connect in the LKE cluster created.
 resource "local_sensitive_file" "kubeconfig" {
   filename        = ".kubeconfig"
   content_base64  = linode_lke_cluster.default.kubeconfig
