@@ -1,6 +1,6 @@
 resource "linode_lke_cluster" "default" {
   k8s_version = var.settings.version
-  label       = var.settings.name
+  label       = var.settings.label
   region      = var.settings.region
 
   pool {

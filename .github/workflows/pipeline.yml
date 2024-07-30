@@ -28,7 +28,7 @@ jobs:
       - name: Package services.
         run: ./package.sh
 
-#      - name: Publish services.
-#        env:
-#          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-#        run: ./publish.sh
+      - name: Publish services.
+        env:
+          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        run: ./publish.sh
