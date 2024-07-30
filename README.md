@@ -8,8 +8,8 @@ What if we could provide an easier and robust way to collect this data?
 
 That's what you'll get here!
 
-This application provides a reliable and scalable way to collect the CDN logs through Akamai Datastream 2 and easily 
-store it into analytics platforms.
+This application provides a reliable and scalable way to collect the Akamai CDN logs through Akamai Datastream 2 and 
+easily store it into analytics platforms.
 
 ## 2. Maintainers
 - [Felipe Vilarinho](https://www.linkedin.com/in/fvilarinho)
