@@ -1,0 +1,34 @@
+name: Akamai Datastream 2 Kafka Connector Pipeline
+
+on:
+  push:
+    branches: [ "*" ]
+    paths-ignore:
+      - "iac/*.tf"
+      - "iac/*.sh"
+      - "deploy.sh"
+      - "undeploy.sh"
+      - "banner.txt"
+      - "about.txt"
+      - "*.md"
+      - "LICENSE"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Jobs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download the project files.
+        uses: actions/checkout@v3
+
+      - name: Package services.
+        run: ./package.sh
+
+#      - name: Publish services.
+#        env:
+#          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+#        run: ./publish.sh
