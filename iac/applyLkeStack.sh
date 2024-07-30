@@ -29,7 +29,7 @@ function applyLkeDeployments() {
   sed -i -e 's|${BUILD_VERSION}|'"$BUILD_VERSION"'|g' "$manifestFilename".tmp
 
   # Applies the manifest.
-  $KUBECTL_CMD apply -f "$manifestFilename".tmp
+  $KUBECTL_CMD apply -f "$manifestFilename".tmp -n "$NAMESPACE"
 }
 
 # Applies the LKE services.
@@ -42,7 +42,7 @@ function applyLkeServices() {
 
 # Clean-up.
 function cleanUp() {
-  rm -f *.yml.tmp
+  rm -f *.yml.tmp*
 }
 
 # Main function.
