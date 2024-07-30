@@ -18,7 +18,7 @@ resource "null_resource" "applyLkeSettings" {
     local_sensitive_file.privateKey,
     local_sensitive_file.certificate,
     local_sensitive_file.kubeconfig,
-    local_sensitive_file.ingestEventsPassword
+    local_sensitive_file.authentication
   ]
 }
 
