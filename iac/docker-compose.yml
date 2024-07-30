@@ -1,0 +1,5 @@
+services:
+  fluentd:
+    platform: linux/amd64
+    build: ../fluentd
+    image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/${IDENTIFIER}:${BUILD_VERSION}

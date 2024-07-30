@@ -1,0 +1,76 @@
+# Zookeeper is responsible to control the state of Apache Kafka.
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  labels:
+    app: zookeeper
+spec:
+  ports:
+    - name: backend
+      port: 2181
+      targetPort: 2181
+  selector:
+    app: zookeeper
+---
+# Responsible to receive the logs and push it to Apache Kafka.
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentd
+  labels:
+    app: fluentd
+spec:
+  ports:
+    - name: backend
+      port: 8888
+      targetPort: 8888
+  selector:
+    app: fluentd
+---
+# Apache Kafka is used to store the logs.
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-broker
+  labels:
+    app: kafka-broker
+spec:
+  type: LoadBalancer
+  ports:
+    - name: backend
+      port: 9092
+      targetPort: 9092
+  selector:
+    app: kafka-broker
+---
+# UI for Apache Kafka.
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-broker-ui
+  labels:
+    app: kafka-broker-ui
+spec:
+  ports:
+    - name: frontend
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: kafka-broker-ui
+---
+# Responsible to proxy FluentD and the UI for Apache Kafka.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer
+  ports:
+    - name: frontend
+      port: 443
+      targetPort: 443
+  selector:
+    app: nginx

@@ -1,0 +1,214 @@
+# Zookeeper is responsible to control the state of Apache Kafka.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        fsGroup: 101
+      restartPolicy: Always
+      containers:
+        - name: zookeeper
+          image: bitnami/zookeeper:3.8.4
+          imagePullPolicy: Always
+          env:
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+          ports:
+            - containerPort: 2181
+          volumeMounts:
+            - name: zookeeper-data
+              mountPath: /bitnami/zookeeper/data
+      volumes:
+        - name: zookeeper-data
+          persistentVolumeClaim:
+            claimName: zookeeper-data-claim
+---
+# Apache Kafka is used to store the logs.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-broker
+  labels:
+    app: kafka-broker
+spec:
+  replicas: 3
+  serviceName: kafka-broker
+  selector:
+    matchLabels:
+      app: kafka-broker
+  template:
+    metadata:
+      labels:
+        app: kafka-broker
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        fsGroup: 101
+      restartPolicy: Always
+      containers:
+        - name: kafka-broker
+          image: bitnami/kafka:3.7.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9092
+          volumeMounts:
+            - name: kafka-broker-init
+              mountPath: /docker-entrypoint-initdb.d/init.sh
+              subPath: init.sh
+            - name: kafka-broker-settings
+              mountPath: /bitnami/kafka/config/server.properties
+              subPath: settings.conf
+            - name: kafka-broker-data
+              mountPath: /bitnami/kafka/data
+      volumes:
+        - name: kafka-broker-init
+          configMap:
+            name: kafka-broker-init
+        - name: kafka-broker-settings
+          configMap:
+            name: kafka-broker-settings
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-broker-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 20Gi
+        storageClassName: linode-block-storage
+---
+# Responsible to receive the logs and push it to Apache Kafka.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  labels:
+    app: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: fluentd
+          image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/${IDENTIFIER}:${BUILD_VERSION}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+          volumeMounts:
+            - name: fluentd-settings
+              mountPath: /opt/bitnami/fluentd/conf/fluentd.conf
+              subPath: settings.conf
+      volumes:
+        - name: fluentd-settings
+          configMap:
+            name: fluentd-settings
+---
+# UI for Apache Kafka.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kafka-broker-ui
+  labels:
+    app: kafka-broker-ui
+spec:
+  selector:
+    matchLabels:
+      app: kafka-broker-ui
+  template:
+    metadata:
+      labels:
+        app: kafka-broker-ui
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+      restartPolicy: Always
+      containers:
+        - name: kafka-broker-ui
+          image: provectuslabs/kafka-ui:v0.7.2
+          imagePullPolicy: Always
+          env:
+            - name: "KAFKA_CLUSTERS_0_NAME"
+              value: "kafka-broker"
+            - name: "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS"
+              value: "kafka-broker:9092"
+            - name: "KAFKA_CLUSTERS_0_ZOOKEEPER"
+              value: "zookeeper:2181"
+            - name: "SERVER_SERVLET_CONTEXT_PATH"
+              value: "/events"
+          ports:
+            - containerPort: 8080
+---
+# Responsible to proxy FluentD and the UI for Apache Kafka.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: nginx
+          image: nginx:1.27.0-alpine3.19
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: nginx-settings
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: settings.conf
+            - name: nginx-auth
+              mountPath: /etc/nginx/conf.d/.htpasswd
+              subPath: .htpasswd
+            - name: nginx-tls-certificate
+              mountPath: /etc/ssl/certs/cert.crt
+              subPath: cert.crt
+            - name: nginx-tls-private-key
+              mountPath: /etc/ssl/private/cert.key
+              subPath: cert.key
+      volumes:
+        - name: nginx-settings
+          configMap:
+            name: nginx-settings
+        - name: nginx-auth
+          configMap:
+            name: nginx-auth
+        - name: nginx-tls-certificate
+          configMap:
+            name: nginx-tls-certificate
+        - name: nginx-tls-private-key
+          configMap:
+            name: nginx-tls-private-key
