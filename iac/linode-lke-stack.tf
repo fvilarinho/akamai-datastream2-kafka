@@ -9,8 +9,8 @@ resource "null_resource" "applyLkeSettings" {
     command = "./applyLkeSettings.sh"
 
     environment = {
-      KUBECONFIG=local_sensitive_file.kubeconfig.filename
-      NAMESPACE=var.settings.namespace
+      KUBECONFIG = local_sensitive_file.kubeconfig.filename
+      NAMESPACE  = var.settings.namespace
     }
   }
 
@@ -33,8 +33,8 @@ resource "null_resource" "applyLkeStack" {
     command = "./applyLkeStack.sh"
 
     environment = {
-      KUBECONFIG=local_sensitive_file.kubeconfig.filename
-      NAMESPACE=var.settings.namespace
+      KUBECONFIG = local_sensitive_file.kubeconfig.filename
+      NAMESPACE  = var.settings.namespace
     }
   }
 
