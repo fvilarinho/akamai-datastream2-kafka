@@ -4,14 +4,18 @@ on:
   push:
     branches: [ "*" ]
     paths-ignore:
+      - "*.md"
+      - "about.txt"
+      - "banner.txt"
+      - "deploy.sh"
+      - "fluentd/etc/*"
       - "iac/*.tf"
       - "iac/*.sh"
-      - "deploy.sh"
-      - "undeploy.sh"
-      - "banner.txt"
-      - "about.txt"
-      - "*.md"
+      - "kafka-broker/bin/*"
+      - "kafka-broker/etc/*"
       - "LICENSE"
+      - "nginx/etc/*"
+      - "undeploy.sh"
 
 permissions:
   contents: read
