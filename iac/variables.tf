@@ -24,7 +24,7 @@ variable "settings" {
       {
         name  = "ingest-events"
         from  = [ "0.0.0.0/0" ]
-        ports = "443"
+        ports = "80,443"
       },
       {
         name  = "export-events"
