@@ -11,7 +11,8 @@ data "external" "lkeLoadBalancers" {
 # Creates the LKE cluster firewall.
 resource "linode_firewall" "default" {
   inbound_policy  = "DROP"
-  label           = "${var.settings.label}-firewall"
+  label           = "${var.settings.namespace}-firewall"
+  tags            = var.settings.tags
   outbound_policy = "ACCEPT"
 
   dynamic "inbound" {
