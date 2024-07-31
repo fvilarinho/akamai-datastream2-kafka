@@ -30,6 +30,8 @@ function prepareToExecute() {
   export TERRAFORM_CMD=$(which terraform)
   export KUBECTL_CMD=$(which kubectl)
   export DOCKER_CMD=$(which docker)
+  export LINODE_CLI_CMD=$(which linode-cli)
+  export JQ_CMD=$(which jq)
 
   # Mandatory environment variables.
   export WORK_DIR="$PWD"/iac

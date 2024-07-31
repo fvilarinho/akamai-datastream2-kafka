@@ -8,6 +8,7 @@ variable "settings" {
   default = {
     label     = "akamai-datastream2-cluster"
     namespace = "akamai-datastream2"
+    tags      = [ "observability" ]
     region    = "<region>"
     version   = "<version>"
     ha        = true

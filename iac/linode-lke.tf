@@ -1,8 +1,9 @@
 # Creates a LKE cluster that will run the stack.
 resource "linode_lke_cluster" "default" {
   k8s_version = var.settings.version
-  label       = var.settings.label
   region      = var.settings.region
+  label       = var.settings.label
+  tags        = var.settings.tags
 
   pool {
     type  = var.settings.nodeType

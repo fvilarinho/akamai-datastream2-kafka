@@ -7,12 +7,6 @@ function checkDependencies() {
 
     exit 1
   fi
-
-  if [ -z "$KUBECTL_CMD" ]; then
-    echo "kubectl is not installed! Please install it first to continue!"
-
-    exit 1
-  fi
 }
 
 # Prepares the environment to execute the commands of this script.
