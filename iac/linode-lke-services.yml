@@ -7,7 +7,7 @@ metadata:
     app: zookeeper
 spec:
   ports:
-    - name: backend
+    - name: tcp
       port: 2181
       targetPort: 2181
   selector:
@@ -22,7 +22,7 @@ metadata:
     app: fluentd
 spec:
   ports:
-    - name: backend
+    - name: http
       port: 8888
       targetPort: 8888
   selector:
@@ -38,7 +38,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: backend
+    - name: tcp
       port: 9092
       targetPort: 9092
   selector:
@@ -53,7 +53,7 @@ metadata:
     app: kafka-broker-ui
 spec:
   ports:
-    - name: frontend
+    - name: http
       port: 8080
       targetPort: 8080
   selector:
@@ -69,7 +69,10 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: frontend
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
       port: 443
       targetPort: 443
   selector:
