@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Check the dependencies of this script.
+function checkDependencies() {
+  if [ -z "$NODES_COUNT" ]; then
+    echo "Please provide the number of nodes to deploy the stack!"
+
+    exit 1
+  fi
+}
+
 # Prepares the environment to execute this script.
 function prepareToExecute() {
   cd .. || exit 1
@@ -27,6 +36,7 @@ function applyLkeDeployments() {
   sed -i -e 's|${DOCKER_REGISTRY_ID}|'"$DOCKER_REGISTRY_ID"'|g' "$manifestFilename".tmp
   sed -i -e 's|${IDENTIFIER}|'"$IDENTIFIER"'|g' "$manifestFilename".tmp
   sed -i -e 's|${BUILD_VERSION}|'"$BUILD_VERSION"'|g' "$manifestFilename".tmp
+  sed -i -e 's|${NODES_COUNT}|'"$NODES_COUNT"'|g' "$manifestFilename".tmp
 
   # Applies the manifest.
   $KUBECTL_CMD apply -f "$manifestFilename".tmp -n "$NAMESPACE"
